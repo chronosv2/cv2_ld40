@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Ore : MonoBehaviour {
 
-    public enum OreType { RED, BLUE, YELLOW, GREEN }
+    public enum OreType { RED, BLUE, YELLOW, GREEN, NONE }
     [SerializeField]
     OreType oreType;
     [SerializeField]
@@ -22,17 +22,11 @@ public class Ore : MonoBehaviour {
 	void Update () {
         HandleScaling();
         HandleMovement();
-        HandleCollision();
     }
 
     private void HandleScaling()
     {
         //todo: Implement scaling sprite for distance down conveyor
-    }
-
-    private void HandleCollision()
-    {
-        //todo: Implement collision with bin
     }
 
     private void HandleMovement()
