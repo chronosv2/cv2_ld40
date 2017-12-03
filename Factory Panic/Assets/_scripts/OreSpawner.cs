@@ -17,6 +17,7 @@ public class OreSpawner : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (!gameManager.GameActive) { return; }
         timer += Time.deltaTime;
         if (timer >= spawnTime)
         {

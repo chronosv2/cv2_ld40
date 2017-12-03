@@ -16,8 +16,8 @@ public class OreBox : MonoBehaviour {
     GameManager gameManager;
     public int Capacity { private set; get; }
     public float CapPercent { private set; get; }
+    public int Overflow { private set; get; }
     int HeldOre;
-    int Overflow;
     void Start()
     {
         HeldOre = 0;

@@ -12,7 +12,9 @@ public class Player : MonoBehaviour {
     float realMoveSpeed;
     float moveVelocity = 0;
     float slowRate = 0;
+    public bool IsCarryingUpgrade { private set; get; }
 
+    GameManager gameManager;
     Collider2D lastCollider;
     BoxCollider2D myCollider;
 
@@ -20,10 +22,15 @@ public class Player : MonoBehaviour {
 	void Start () {
         realMoveSpeed = moveSpeed;
         myCollider = GetComponent<BoxCollider2D>();
+        gameManager = FindObjectOfType<GameManager>();
+        IsCarryingUpgrade = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        if (!gameManager.GameActive) {
+            return;
+        }
         HandleInput();
         HandleMovement();
 	}
@@ -72,31 +79,62 @@ public class Player : MonoBehaviour {
         }
     }
 
+    public Ore.OreType[] GetHeldOres()
+    {
+        return new Ore.OreType[2] { carry1, carry2 };
+    }
+
         private void HandleGrab()
     {
         Debug.Log("Grab button pressed.");
         if (myCollider.IsTouching(lastCollider))
         {
-            if (carry1 == Ore.OreType.NONE || carry2 == Ore.OreType.NONE)
+            Debug.Log("Colliders match.");
+            if ((carry1 == Ore.OreType.NONE || carry2 == Ore.OreType.NONE) && !IsCarryingUpgrade)
             {
                 if (lastCollider.GetComponent<OreBox>() != null)
                 {
                     OreBox activeBox = lastCollider.GetComponent<OreBox>();
-                    Debug.Log("Grab used on " + lastCollider.name + " Ore Box ("+activeBox.GetBoxType().ToString()+").");
+                    Debug.Log("Grab used on " + lastCollider.name + " Ore Box (" + activeBox.GetBoxType().ToString() + ").");
                     if (activeBox.TakeOre())
                     {
                         if (carry1 == Ore.OreType.NONE)
                         {
                             carry1 = activeBox.GetBoxType();
-                        } else if (carry2 == Ore.OreType.NONE)
+                        }
+                        else if (carry2 == Ore.OreType.NONE)
                         {
                             carry2 = activeBox.GetBoxType();
                         }
                         Debug.Log("Now carrying: " + carry1.ToString() + " and " + carry2.ToString() + ".");
-                    } else
+                    }
+                    else
                     {
                         Debug.Log("Could not take ore. Box is empty.");
                     }
+                }
+            }
+            else if (IsCarryingUpgrade)
+            {
+                if (lastCollider.GetComponent<OreBox>() != null)
+                {
+                    OreBox activeBox = lastCollider.GetComponent<OreBox>();
+                    Debug.Log("Grab used on " + lastCollider.name + " Ore Box (" + activeBox.GetBoxType().ToString() + ").");
+                    activeBox.SetCapacity(activeBox.Capacity + 2);
+                    Debug.Log("Upgrade used.");
+                    IsCarryingUpgrade = false;
+                }
+            }
+            if (lastCollider.GetComponent<UpgradeOTron>() != null)
+            {
+                UpgradeOTron upgradeOTron = lastCollider.GetComponent<UpgradeOTron>();
+                bool getUpgrade = false;
+                getUpgrade = upgradeOTron.CheckOres(new Ore.OreType[2] { carry1, carry2 });
+                if (getUpgrade)
+                {
+                    carry1 = Ore.OreType.NONE;
+                    carry2 = Ore.OreType.NONE;
+                    IsCarryingUpgrade = true;
                 }
             }
             if (lastCollider.GetComponent<OreProcessor>() != null)

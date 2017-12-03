@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using Random = UnityEngine.Random;
 public class OreProcessor : MonoBehaviour {
 
     Ore.OreType ore1 = Ore.OreType.NONE;
@@ -31,7 +29,9 @@ public class OreProcessor : MonoBehaviour {
     SpriteRenderer panel4;
     [SerializeField]
     Material[] oreColors;
-
+    [SerializeField]
+    WantedBoardItem[] wantedItems;
+    
     public struct ScoringPatterns
     {
         public int Value;
@@ -164,6 +164,7 @@ public class OreProcessor : MonoBehaviour {
             ore2 = Ore.OreType.NONE;
             ore3 = Ore.OreType.NONE;
             ore4 = Ore.OreType.NONE;
+            gameManager.SetLastPattern(new Ore.OreType[4] { ore1, ore2, ore3, ore4 }, baseScore);
             return baseScore;
         } else
         {
@@ -230,6 +231,7 @@ public class OreProcessor : MonoBehaviour {
                 }
             }
             Debug.Log("Pattern " + i + ": Ores: " + patterns[i].ores[0].ToString() + "," + patterns[i].ores[1].ToString() + "," + patterns[i].ores[2].ToString() + "," + patterns[i].ores[3].ToString() + " at value " + patterns[i].Value);
+            wantedItems[i].Set(new Ore.OreType[4] { patterns[i].ores[0], patterns[i].ores[1], patterns[i].ores[2], patterns[i].ores[3] });
             currentValue = currentValue + increment;
         }
     }
