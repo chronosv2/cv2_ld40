@@ -65,6 +65,8 @@ public class GameManager : MonoBehaviour {
     [SerializeField]
     float messageLength = 2.0f;
     [SerializeField]
+    Image pauseBG;
+    [SerializeField]
     Image FailImage;
     Player player;
     float multiplier = 1.0f;
@@ -72,9 +74,12 @@ public class GameManager : MonoBehaviour {
     AudioSource audioSource;
     [SerializeField]
     AudioClip klaxon;
+    public static bool IsGamePaused { private set; get; }
+    
     // Use this for initialization
     void Start () {
         SpawnSpeed = 8.0f;
+        IsGamePaused = false;
         GameActive = true;
         IEnumerator coroutine = SpeedUpCoroutine();
         StartCoroutine(coroutine);
@@ -105,6 +110,10 @@ public class GameManager : MonoBehaviour {
     {
         while(GameActive)
         {
+            if (IsGamePaused)
+            {
+                yield return null;
+            }
             yield return new WaitForSeconds(10.0f);
             SpawnSpeed = Mathf.Clamp(SpawnSpeed - 0.2f, 3f, 8);
         }
@@ -153,6 +162,24 @@ public class GameManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (!GameActive) { return; }
+        pauseBG.enabled = IsGamePaused;
+        if (Input.GetButtonUp("Cancel"))
+        {
+            IsGamePaused = !IsGamePaused;
+            if (!IsGamePaused)
+            {
+                messageBox.enabled = false;
+            }
+        }
+        if (IsGamePaused)
+        {
+            if (!messageBox.enabled)
+            {
+                messageBox.enabled = true;
+                messageBox.text = "Game Paused";
+            }
+            return;
+        }
         BlueCount = blueBox.HeldOre;
         GreenCount = greenBox.HeldOre;
         RedCount = redBox.HeldOre;
