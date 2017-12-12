@@ -170,7 +170,7 @@ public class Player : MonoBehaviour {
                     //Debug.Log("Grab used on " + lastCollider.name + " Ore Box (" + activeBox.GetBoxType().ToString() + ").");
                     activeBox.SetCapacity(activeBox.Capacity + 2);
                     //Debug.Log("Upgrade used.");
-                    audioSource.PlayOneShot(upgrade_use);
+                    audioSource.PlayOneShot(upgrade_use,0.8f);
                     IsCarryingUpgrade = false;
                 }
             }
@@ -181,7 +181,7 @@ public class Player : MonoBehaviour {
                 getUpgrade = upgradeOTron.CheckOres(new Ore.OreType[2] { carry1, carry2 });
                 if (getUpgrade)
                 {
-                    audioSource.PlayOneShot(upgrade);
+                    audioSource.PlayOneShot(upgrade, 0.5f);
                     carry1 = Ore.OreType.NONE;
                     carry2 = Ore.OreType.NONE;
                     IsCarryingUpgrade = true;
